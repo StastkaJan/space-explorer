@@ -2,7 +2,17 @@
 
 **Framework: Solid.** An illustrated solar-system explorer with animated orbits, controllable time, and approachable planet details.
 
-Status: project brief only. Follow the [shared development directions](DEVELOPMENT.md).
+Status: the first-release features and regression tooling are implemented in `app/`. Final acceptance verification is in progress; see [RELEASE-VERIFICATION.md](RELEASE-VERIFICATION.md) for evidence and remaining gates.
+
+## Documentation
+
+- This README defines the product scope, simulation rules, and acceptance criteria.
+- [DEVELOPMENT.md](DEVELOPMENT.md) covers setup, architecture, and verification.
+- [ROADMAP.md](ROADMAP.md) defines release milestones and planned interaction decisions.
+- [INTEGRATION.md](INTEGRATION.md) defines integration stages, shared contracts, and acceptance gates.
+- [TICKETS.md](TICKETS.md) breaks the first release into dependency-ordered implementation tickets.
+- [AGENTS.md](AGENTS.md) gives repository-specific instructions for coding agents.
+- [compose.yaml](compose.yaml) defines development, browser tests, and local production preview.
 
 ## Experience and visual direction
 
@@ -26,7 +36,7 @@ Use Solid, TypeScript, Vite, SVG, and CSS. Use `createSignal` for selected plane
 
 One `requestAnimationFrame` loop advances simulated time. A pure orbital module converts time and display parameters into positions. Keep the animation loop out of individual planet components and stop it when paused, hidden, or disposed.
 
-Proposed structure inside `app/src/`:
+Implemented structure inside `app/src/`:
 
 ```text
 App.tsx
@@ -40,7 +50,7 @@ features/solar-system/
   createSimulation.ts
 features/planet/PlanetDetails.tsx
 data/planets.ts
-styles/tokens.css
+App.css / index.css
 ```
 
 `createSimulation` owns clock lifecycle; `orbit` owns pure math; the SVG view owns rendering; details own readable content. Reuse the planet color and label data across markers, list entries, and details. Do not build a general physics engine.
@@ -66,21 +76,20 @@ Done when all planets can be selected by keyboard, time controls behave predicta
 
 ## Docker Compose setup
 
-A [Compose configuration](compose.yaml) is included. The application itself has not been scaffolded. Docker Desktop with Linux containers, or Docker Engine with Compose, is required; host Node.js is unnecessary.
-
-When implementation starts, run these commands once from this repository's root:
+The [Compose configuration](compose.yaml) runs the existing application. Docker Desktop with Linux containers, or Docker Engine with Compose, is required; host Node.js is unnecessary. From this repository's root:
 
 ```powershell
-docker compose run --rm setup npm create --yes vite@latest app -- --template solid-ts --no-interactive
-docker compose run --rm setup npm --prefix app install --package-lock-only
-docker compose up -d
-docker compose logs -f web
+docker compose up -d --wait web
 ```
 
-Open http://localhost:5176 after the server is ready. On a clone that already contains `app/package.json` and `app/package-lock.json`, skip generation and run `docker compose up -d`.
+Open http://localhost:5176. Startup installs the locked dependencies into an isolated volume; source changes update the running app. Set `APP_PORT` in a local `.env` if the default port is occupied. Stop with `docker compose down`.
 
-The `setup` service is only used for tooling; ordinary startup launches `web`. Source changes update the running app, and container dependencies use an isolated volume. Stop with `docker compose down`. Set `APP_PORT` in a local `.env` if the default port is occupied.
+Run browser journeys with `docker compose run --rm test`. For the locally served production build:
 
-See the [development guide](DEVELOPMENT.md#docker-compose-workflow) for builds, tests, dependency updates, and the required quality scripts. Keep the generated `dev` script: Compose calls it to launch Vite.
+```powershell
+docker compose exec web npm run build
+docker compose up -d --wait preview
+docker compose run --rm --no-deps -e PLAYWRIGHT_BASE_URL=http://preview:4173 test
+```
 
-This setup is for development; the finished application will still produce static production assets.
+Open http://localhost:5177 for production preview (`PREVIEW_PORT` overrides its port). Preview serves `app/dist/`; rebuild after source changes. It is local verification, not deployment. See [DEVELOPMENT.md](DEVELOPMENT.md#docker-compose-workflow) for dependency updates, all quality checks, and failure reports, and [RELEASE-VERIFICATION.md](RELEASE-VERIFICATION.md) for release evidence.
