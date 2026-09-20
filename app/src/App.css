@@ -1,5 +1,354 @@
-main {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
+  color: #ecede9;
+  background: #080e15;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid #c4e9d4;
+  outline-offset: 5px;
+}
+.explorer {
+  max-width: 1480px;
+  margin: auto;
+  padding: 0 4%;
+}
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 27px 0;
+  border-bottom: 1px solid #273039;
+}
+.wordmark {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+}
+.wordmark span {
+  color: #c4e9d4;
+  font-size: 25px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+.edition,
+.eyebrow,
+.map-caption,
+.page-footer {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+}
+.edition {
+  color: #9aa6b1;
+}
+.intro {
+  padding: 34px 0 28px;
+}
+.eyebrow {
+  color: #bdd8c6;
+  font-weight: 600;
+}
+h1 {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  margin: 10px 0;
+}
+.intro > p:last-child {
+  margin: 0;
+  color: #9aa6b1;
+  font-size: 14px;
+}
+.observatory {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  border: 1px solid #273039;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b131d;
+}
+.system-stage {
+  position: relative;
+  min-width: 0;
+  padding: 22px;
+  background-image:
+    radial-gradient(circle at 23% 31%, #7f96ad55 1px, transparent 1px),
+    radial-gradient(circle at 78% 69%, #7f96ad44 1px, transparent 1px);
+  background-size:
+    137px 153px,
+    193px 181px;
+}
+.map-caption {
+  color: #c6ced6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.map-caption > span:last-child {
+  margin-left: auto;
+  color: #8593a0;
+  font-size: 8px;
+}
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #bdd8c6;
+}
+.solar-system {
+  display: block;
+  width: 100%;
+  max-height: 640px;
+  overflow: visible;
+}
+.orbit {
+  fill: none;
+  stroke: #293643;
+  stroke-width: 0.75;
+}
+.orbit-selected {
+  stroke: #87a796;
+  stroke-width: 1.2;
+}
+.planet-marker {
+  cursor: pointer;
+}
+.marker-target {
+  fill: transparent;
+  stroke: transparent;
+}
+.planet-marker:hover .marker-target,
+.planet-marker:focus-visible .marker-target,
+.planet-marker[aria-pressed='true'] .marker-target {
+  stroke: #d3eddd;
+  stroke-width: 1.4;
+}
+.planet-marker text {
+  fill: #c8d1da;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.sun-label {
+  fill: #ddbb81;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+.scale-note {
+  color: #9aa6b1;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 6px 0 0;
+  max-width: 480px;
+}
+.detail-panel {
+  border-left: 1px solid #273039;
+  padding: 24px;
+  background: #111b25;
+}
+.detail-panel h2 {
+  font-size: 35px;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  margin: 9px 0 16px;
+}
+.detail-panel p:not(.eyebrow) {
+  color: #bac4ce;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.system-introduction {
+  padding-top: 12px;
+}
+.decorative-orbits {
+  display: grid;
+  place-items: center;
+  height: 185px;
+  margin: 35px 0;
+  background: repeating-radial-gradient(
+    ellipse at center,
+    transparent 0 24px,
+    #36443d 25px,
+    transparent 26px 42px
+  );
+  border-radius: 50%;
+}
+.decorative-orbits span {
+  font-size: 62px;
+  color: #d2d9b1;
+}
+.selection-hint {
+  border-top: 1px solid #33404b;
+  padding-top: 20px;
+  margin-top: 25px;
+}
+.return-button {
+  background: transparent;
+  border: 0;
+  padding: 8px 0;
+  color: #bdcdc6;
+  font-size: 12px;
+  min-height: 44px;
+}
+.planet-portrait {
+  display: grid;
+  place-items: center;
+  height: 150px;
+}
+.planet-portrait > span {
+  display: block;
+  width: 110px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 28% 25%, #ffffff44, transparent 35%, #000b 85%),
+    var(--planet-color);
+  box-shadow: 0 0 50px -15px var(--planet-color);
+}
+.planet-description {
+  margin-bottom: 4px;
+}
+.fact-source {
+  color: #a4b9c4;
+  font-size: 10px;
+  text-underline-offset: 3px;
+}
+.planet-facts {
+  margin-bottom: 0;
+}
+.planet-facts > div {
+  padding: 15px 0;
+  border-top: 1px solid #30404c;
+}
+.planet-facts dt {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #afbac4;
+}
+.planet-facts dd {
+  margin: 5px 0;
+  font-size: 20px;
+}
+.planet-facts dd span {
+  font-size: 12px;
+  color: #b6c2cc;
+}
+.planet-navigation {
+  padding: 20px 0 25px;
+}
+.planet-navigation > p {
+  display: flex;
+  justify-content: space-between;
+}
+.planet-list {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 8px;
+}
+.planet-list button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  gap: 12px;
+  min-height: 108px;
+  padding: 16px 4px 13px;
+  border: 1px solid #2b3742;
+  border-radius: 7px;
+  color: #c3cdd6;
+  background: #0d1620;
+  font-size: 12px;
+}
+.planet-list button:hover {
+  background: #17242d;
+}
+.planet-list button[aria-pressed='true'] {
+  background: #1b2c2b;
+  border-color: #bdd8c6;
+  color: #e4f2e9;
+}
+.planet-number {
+  position: absolute;
+  top: 8px;
+  left: 9px;
+  color: #9aa6b1;
+  font-size: 8px;
+}
+.planet-swatch {
+  width: 28px;
+  height: 28px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 25% 25%, #fff4, transparent 35%, #000b),
+    var(--planet-color);
+}
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #8b99a5;
+  border-top: 1px solid #273039;
+  padding: 20px 0 30px;
+  font-size: 9px;
+}
+.page-footer > span:first-child {
+  letter-spacing: 0;
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  .observatory {
+    grid-template-columns: minmax(0, 1fr) 270px;
+  }
+  .detail-panel {
+    padding: 20px;
+  }
+  .planet-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .edition {
+    display: none;
+  }
+  .observatory {
+    grid-template-columns: 1fr;
+  }
+  .system-stage {
+    padding: 17px 12px;
+  }
+  .detail-panel {
+    border-left: 0;
+    border-top: 1px solid #273039;
+  }
+  .decorative-orbits {
+    display: none;
+  }
+  .system-introduction {
+    padding: 0;
+  }
+  .intro {
+    padding: 27px 0;
+  }
+  .planet-list {
+    gap: 6px;
+  }
+  .planet-list button {
+    font-size: 11px;
+  }
+  .page-footer > span:last-child {
+    display: none;
+  }
 }
