@@ -10,7 +10,7 @@
     "check": "tsc -b",
     "lint": "eslint .",
     "format:check": "prettier --check .",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
     "solid-js": "^1.9.15"
