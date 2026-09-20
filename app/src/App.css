@@ -87,6 +87,20 @@ a {
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
+.scrub-control {
+  display: flex;
+  flex: 1 1 220px;
+  flex-direction: column;
+  min-width: 0;
+  color: #bac4ce;
+  font-size: 12px;
+}
+.scrub-control input {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  accent-color: #bdd8c6;
+}
 .time-limit {
   width: 100%;
   margin: 0;

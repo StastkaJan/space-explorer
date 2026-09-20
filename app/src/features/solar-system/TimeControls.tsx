@@ -1,5 +1,9 @@
 import { For, Show } from 'solid-js'
-import { MAX_SIMULATED_DAYS, SPEED_CHOICES } from './createSimulation'
+import {
+  MAX_SIMULATED_DAYS,
+  SCRUB_STEP,
+  SPEED_CHOICES,
+} from './createSimulation'
 
 type TimeControlsProps = {
   simulatedDays: number
@@ -8,6 +12,8 @@ type TimeControlsProps = {
   onPlay: () => void
   onPause: () => void
   onSpeedChange: (speed: number) => void
+  onScrub: (days: number) => void
+  onReset: () => void
 }
 
 export default function TimeControls(props: TimeControlsProps) {
@@ -33,13 +39,48 @@ export default function TimeControls(props: TimeControlsProps) {
           </For>
         </select>
       </label>
+      <label class="scrub-control">
+        Scrub simulated day
+        <input
+          type="range"
+          min={0}
+          max={MAX_SIMULATED_DAYS}
+          step={SCRUB_STEP}
+          value={Math.floor(props.simulatedDays)}
+          aria-describedby="scrub-hint"
+          onPointerDown={() => props.onPause()}
+          onKeyDown={(event) => {
+            if (
+              [
+                'ArrowLeft',
+                'ArrowRight',
+                'ArrowUp',
+                'ArrowDown',
+                'Home',
+                'End',
+                'PageUp',
+                'PageDown',
+              ].includes(event.key)
+            )
+              props.onPause()
+          }}
+          onInput={(event) => props.onScrub(event.currentTarget.valueAsNumber)}
+        />
+      </label>
+      <button type="button" onClick={() => props.onReset()}>
+        Reset
+      </button>
       <p class="simulation-time">
         Simulated day:{' '}
         <span>{Math.floor(props.simulatedDays).toLocaleString('en-US')}</span>
       </p>
+      <p class="time-limit" id="scrub-hint">
+        Scrubbing pauses time. Select Play to resume.
+      </p>
       <Show when={props.simulatedDays >= MAX_SIMULATED_DAYS}>
         <p class="time-limit">
-          End of the 60,000-day illustration. Playback is paused.
+          End of the 60,000-day illustration. Scrub backward or reset to explore
+          again.
         </p>
       </Show>
     </section>

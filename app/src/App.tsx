@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js'
+import { batch, createSignal } from 'solid-js'
 import { planets } from './data/planets'
 import PlanetDetails from './features/planet/PlanetDetails'
 import PlanetList from './features/solar-system/PlanetList'
@@ -59,6 +59,13 @@ export default function App() {
         onPlay={simulation.play}
         onPause={simulation.pause}
         onSpeedChange={simulation.setSpeed}
+        onScrub={simulation.scrub}
+        onReset={() =>
+          batch(() => {
+            simulation.reset()
+            setSelectedId(undefined)
+          })
+        }
       />
       <footer class="page-footer">
         <span>A small invitation to look up.</span>

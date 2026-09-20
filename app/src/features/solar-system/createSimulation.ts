@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, untrack } from 'solid-js'
+import { batch, createSignal, onCleanup, untrack } from 'solid-js'
 
 export const DEFAULT_SPEED = 30
 export const SPEED_CHOICES = [1, 30, 365, 1000]
@@ -76,5 +76,20 @@ export function createSimulation(initiallyPlaying = true) {
       scheduleFrame()
     },
     pause,
+    scrub(value: number) {
+      batch(() => {
+        pause()
+        if (Number.isFinite(value)) {
+          setSimulatedDays(Math.min(MAX_SIMULATED_DAYS, Math.max(0, value)))
+        }
+      })
+    },
+    reset() {
+      batch(() => {
+        pause()
+        setSimulatedDays(0)
+        setSpeed(DEFAULT_SPEED)
+      })
+    },
   }
 }
