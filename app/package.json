@@ -10,13 +10,15 @@
     "check": "tsc -b",
     "lint": "eslint .",
     "format:check": "prettier --check .",
-    "test": "vitest run"
+    "test": "vitest run src",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "solid-js": "^1.9.15"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.63.0",
     "@types/node": "^24.13.3",
     "eslint": "^10.11.0",
     "eslint-plugin-solid": "^0.18.0",
