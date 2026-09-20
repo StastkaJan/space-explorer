@@ -6,6 +6,7 @@ export default function PlanetMarker(props: {
   planet: Planet
   simulatedDays: number
   selected: boolean
+  hidden: boolean
   onSelect: (id: string) => void
 }) {
   const position = createMemo(() =>
@@ -15,11 +16,16 @@ export default function PlanetMarker(props: {
     <g
       class="planet-marker"
       role="button"
-      tabindex="0"
+      tabindex={props.hidden ? -1 : 0}
+      aria-hidden={props.hidden}
       aria-label={`Select ${props.planet.label}`}
       aria-pressed={props.selected}
       data-planet-id={props.planet.id}
       transform={`translate(${position().x} ${position().y})`}
+      style={{
+        '--closeup-scale': 120 / props.planet.displayRadiusSvgUnits,
+        '--planet-radius': `${props.planet.displayRadiusSvgUnits}px`,
+      }}
       onClick={() => props.onSelect(props.planet.id)}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -40,7 +46,15 @@ export default function PlanetMarker(props: {
         r={props.planet.displayRadiusSvgUnits}
         fill="url(#planet-shade)"
       />
-      <text y={props.planet.displayRadiusSvgUnits + 17} text-anchor="middle">
+      <text
+        y={
+          props.planet.displayRadiusSvgUnits +
+          (props.selected
+            ? (48 * props.planet.displayRadiusSvgUnits) / 120
+            : 17)
+        }
+        text-anchor="middle"
+      >
         {props.planet.label}
       </text>
     </g>

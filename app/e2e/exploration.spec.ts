@@ -21,6 +21,7 @@ test('select a planet from the list and diagram and read its facts', async ({
     /^https:\/\//,
   )
 
+  await page.getByRole('button', { name: /Back to solar system/ }).click()
   await page.getByRole('button', { name: 'Select Mars', exact: true }).click()
   await expect(
     details.getByRole('heading', { name: 'Mars', exact: true }),
