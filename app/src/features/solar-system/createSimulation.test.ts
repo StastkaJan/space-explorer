@@ -137,7 +137,7 @@ describe('shared simulation clock', () => {
     expect(frames.size).toBe(1)
   })
 
-  it('pauses with no frames and resumes from a fresh timestamp', () => {
+  it('keeps user-paused playback stopped through hide/show and resumes from a fresh timestamp', () => {
     const clock = start()
     tick(0)
     tick(1000)
@@ -146,6 +146,13 @@ describe('shared simulation clock', () => {
     expect(frames.size).toBe(0)
     clock.setSpeed(60)
     expect(clock.playing()).toBe(false)
+    setHidden(true)
+    tick(50_000)
+    setHidden(false)
+    tick(60_000)
+    expect(clock.playing()).toBe(false)
+    expect(clock.simulatedDays()).toBe(30)
+    expect(frames.size).toBe(0)
     clock.play()
     tick(100_000)
     expect(clock.simulatedDays()).toBe(30)

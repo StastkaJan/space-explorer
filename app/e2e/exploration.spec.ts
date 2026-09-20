@@ -32,43 +32,65 @@ test('select a planet from the list and diagram and read its facts', async ({
   )
 })
 
-test('keyboard selects a planet and returns to the system view', async ({
+test('keyboard selects all eight planets and restores focus after returning', async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
-  const earth = page
-    .getByRole('navigation', { name: 'Choose a planet' })
-    .getByRole('button', { name: /Earth/ })
+  const list = page.getByRole('navigation', { name: 'Choose a planet' })
+  const details = page.getByRole('complementary', { name: 'Planet details' })
 
-  // Follow the real tab order rather than focusing the target programmatically.
-  for (
-    let step = 0;
-    step < 20 &&
-    !(await earth.evaluate((element) => element === document.activeElement));
-    step++
-  ) {
-    await page.keyboard.press('Tab')
-  }
-  await expect(earth).toBeFocused()
-  await page.keyboard.press('Enter')
-  await expect(
-    page.getByRole('heading', { name: 'Earth', exact: true }),
-  ).toBeVisible()
+  for (const label of [
+    'Mercury',
+    'Venus',
+    'Earth',
+    'Mars',
+    'Jupiter',
+    'Saturn',
+    'Uranus',
+    'Neptune',
+  ]) {
+    await test.step(label, async () => {
+      const planet = list.getByRole('button', { name: new RegExp(label) })
+      // Follow the real tab order rather than focusing programmatically.
+      for (
+        let step = 0;
+        step < 25 &&
+        !(await planet.evaluate(
+          (element) => element === document.activeElement,
+        ));
+        step++
+      ) {
+        await page.keyboard.press('Tab')
+      }
+      await expect(planet).toBeFocused()
+      await page.keyboard.press('Enter')
+      await expect(
+        details.getByRole('heading', { name: label, exact: true }),
+      ).toBeVisible()
+      await expect(planet).toHaveAttribute('aria-pressed', 'true')
+      await expect(details.locator('dl')).toContainText('Earth days')
+      await expect(details.getByRole('link').first()).toHaveAttribute(
+        'href',
+        /^https:\/\//,
+      )
 
-  const back = page.getByRole('button', { name: /Back to solar system/ })
-  for (
-    let step = 0;
-    step < 20 &&
-    !(await back.evaluate((element) => element === document.activeElement));
-    step++
-  ) {
-    await page.keyboard.press('Tab')
+      const back = page.getByRole('button', { name: /Back to solar system/ })
+      for (
+        let step = 0;
+        step < 25 &&
+        !(await back.evaluate((element) => element === document.activeElement));
+        step++
+      ) {
+        await page.keyboard.press('Tab')
+      }
+      await expect(back).toBeFocused()
+      await page.keyboard.press('Space')
+      await expect(
+        page.getByRole('heading', { name: 'Meet the neighbors.' }),
+      ).toBeVisible()
+      await expect(planet).toHaveAttribute('aria-pressed', 'false')
+      await expect(planet).toBeFocused()
+    })
   }
-  await expect(back).toBeFocused()
-  await page.keyboard.press('Enter')
-  await expect(
-    page.getByRole('heading', { name: 'Meet the neighbors.' }),
-  ).toBeVisible()
-  await expect(earth).toHaveAttribute('aria-pressed', 'false')
-  await expect(earth).toBeFocused()
 })
