@@ -1,16 +1,16 @@
 import type { Planet } from '../../data/planets'
+import { createMemo } from 'solid-js'
+import { positionAtTime } from './orbit'
 
 export default function PlanetMarker(props: {
   planet: Planet
+  simulatedDays: number
   selected: boolean
   onSelect: (id: string) => void
 }) {
-  const x = () =>
-    Math.cos(props.planet.startingAngleRadians) *
-    props.planet.displayOrbitRadiusSvgUnits
-  const y = () =>
-    Math.sin(props.planet.startingAngleRadians) *
-    props.planet.displayOrbitRadiusSvgUnits
+  const position = createMemo(() =>
+    positionAtTime(props.planet, props.simulatedDays),
+  )
   return (
     <g
       class="planet-marker"
@@ -19,7 +19,7 @@ export default function PlanetMarker(props: {
       aria-label={`Select ${props.planet.label}`}
       aria-pressed={props.selected}
       data-planet-id={props.planet.id}
-      transform={`translate(${x()} ${y()})`}
+      transform={`translate(${position().x} ${position().y})`}
       onClick={() => props.onSelect(props.planet.id)}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {

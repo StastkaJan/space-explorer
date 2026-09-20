@@ -3,6 +3,7 @@ import { planets } from './data/planets'
 import PlanetDetails from './features/planet/PlanetDetails'
 import PlanetList from './features/solar-system/PlanetList'
 import SolarSystem from './features/solar-system/SolarSystem'
+import { createSimulation } from './features/solar-system/createSimulation'
 import './App.css'
 
 export function selectedPlanet(id: string | undefined) {
@@ -10,6 +11,7 @@ export function selectedPlanet(id: string | undefined) {
 }
 
 export default function App() {
+  const simulation = createSimulation(false)
   const [selectedId, setSelectedId] = createSignal<string>()
   const selected = () => selectedPlanet(selectedId())
   const returnToSystem = () => {
@@ -36,7 +38,11 @@ export default function App() {
             <span class="status-dot" /> SOLAR SYSTEM{' '}
             <span>ILLUSTRATED VIEW</span>
           </div>
-          <SolarSystem selectedId={selected()?.id} onSelect={setSelectedId} />
+          <SolarSystem
+            simulatedDays={simulation.simulatedDays()}
+            selectedId={selected()?.id}
+            onSelect={setSelectedId}
+          />
           <p class="scale-note">
             An illustration, not an ephemeris. Sizes, distances, and circular
             paths are not to scale.

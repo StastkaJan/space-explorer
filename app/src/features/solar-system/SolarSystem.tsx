@@ -3,6 +3,7 @@ import { planets, sun } from '../../data/planets'
 import PlanetMarker from './PlanetMarker'
 
 export default function SolarSystem(props: {
+  simulatedDays: number
   selectedId: string | undefined
   onSelect: (id: string) => void
 }) {
@@ -43,6 +44,7 @@ export default function SolarSystem(props: {
         {(planet) => (
           <PlanetMarker
             planet={planet}
+            simulatedDays={props.simulatedDays}
             selected={props.selectedId === planet.id}
             onSelect={props.onSelect}
           />

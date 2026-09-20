@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest'
 import { render } from 'solid-js/web'
-import { createSignal } from 'solid-js'
+import { createSignal, untrack } from 'solid-js'
 import App, { selectedPlanet } from './App'
 import { planets } from './data/planets'
 import PlanetDetails from './features/planet/PlanetDetails'
+import SolarSystem from './features/solar-system/SolarSystem'
+import { positionAtTime } from './features/solar-system/orbit'
 
 let dispose: (() => void) | undefined
 afterEach(() => {
@@ -13,6 +15,49 @@ afterEach(() => {
 })
 
 describe('planet selection', () => {
+  it('derives all positions from shared time while selection and details remain valid', () => {
+    const [days, setDays] = createSignal(0)
+    const [id, setId] = createSignal<string>()
+    dispose = render(
+      () => (
+        <>
+          <SolarSystem
+            simulatedDays={days()}
+            selectedId={id()}
+            onSelect={setId}
+          />
+          <PlanetDetails
+            planet={selectedPlanet(id())}
+            onReturn={() => setId(undefined)}
+          />
+        </>
+      ),
+      document.body,
+    )
+    for (const time of [91, 365]) {
+      setDays(time)
+      for (const planet of planets) {
+        const marker = document.querySelector(
+          `[data-planet-id="${planet.id}"]`,
+        )!
+        const position = positionAtTime(planet, time)
+        expect(marker.getAttribute('transform')).toBe(
+          `translate(${position.x} ${position.y})`,
+        )
+        marker.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+        expect(marker.getAttribute('aria-pressed')).toBe('true')
+        expect(document.querySelector('h2')?.textContent).toBe(planet.label)
+        expect(untrack(days)).toBe(time)
+      }
+    }
+    setDays(730)
+    expect(document.querySelector('h2')?.textContent).toBe('Neptune')
+    expect(
+      document
+        .querySelector('[data-planet-id="neptune"]')
+        ?.getAttribute('aria-pressed'),
+    ).toBe('true')
+  })
   it('keeps list, markers, facts, and return action in sync for every planet', () => {
     dispose = render(() => <App />, document.body)
     const panel = document.querySelector('aside')!
