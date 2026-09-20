@@ -1,6 +1,9 @@
 import { createSignal, onCleanup, untrack } from 'solid-js'
 
 export const DEFAULT_SPEED = 30
+export const SPEED_CHOICES = [1, 30, 365, 1000]
+export const MAX_SIMULATED_DAYS = 60_000
+export const SCRUB_STEP = 1
 
 export function createSimulation(initiallyPlaying = true) {
   const [simulatedDays, setSimulatedDays] = createSignal(0)
@@ -30,7 +33,13 @@ export function createSimulation(initiallyPlaying = true) {
     if (disposed || !playing() || document.hidden) return
     if (previousTimestamp !== undefined) {
       const elapsedSeconds = (timestamp - previousTimestamp) / 1000
-      setSimulatedDays((days) => days + elapsedSeconds * speed())
+      setSimulatedDays((days) =>
+        Math.min(MAX_SIMULATED_DAYS, days + elapsedSeconds * speed()),
+      )
+      if (simulatedDays() >= MAX_SIMULATED_DAYS) {
+        pause()
+        return
+      }
     }
     previousTimestamp = timestamp
     scheduleFrame()
@@ -58,9 +67,11 @@ export function createSimulation(initiallyPlaying = true) {
     simulatedDays,
     playing,
     speed,
-    setSpeed,
+    setSpeed(value: number) {
+      if (Number.isFinite(value) && value > 0) setSpeed(value)
+    },
     play() {
-      if (disposed) return
+      if (disposed || simulatedDays() >= MAX_SIMULATED_DAYS) return
       setPlaying(true)
       scheduleFrame()
     },

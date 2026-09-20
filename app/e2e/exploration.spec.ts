@@ -4,6 +4,7 @@ test('select a planet from the list and diagram and read its facts', async ({
   page,
 }) => {
   await page.goto('/')
+  await page.getByRole('button', { name: 'Pause', exact: true }).click()
   const list = page.getByRole('navigation', { name: 'Choose a planet' })
   const details = page.getByRole('complementary', { name: 'Planet details' })
 

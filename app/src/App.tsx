@@ -3,6 +3,7 @@ import { planets } from './data/planets'
 import PlanetDetails from './features/planet/PlanetDetails'
 import PlanetList from './features/solar-system/PlanetList'
 import SolarSystem from './features/solar-system/SolarSystem'
+import TimeControls from './features/solar-system/TimeControls'
 import { createSimulation } from './features/solar-system/createSimulation'
 import './App.css'
 
@@ -11,7 +12,7 @@ export function selectedPlanet(id: string | undefined) {
 }
 
 export default function App() {
-  const simulation = createSimulation(false)
+  const simulation = createSimulation()
   const [selectedId, setSelectedId] = createSignal<string>()
   const selected = () => selectedPlanet(selectedId())
   const returnToSystem = () => {
@@ -51,6 +52,14 @@ export default function App() {
         <PlanetDetails planet={selected()} onReturn={returnToSystem} />
       </section>
       <PlanetList selectedId={selected()?.id} onSelect={setSelectedId} />
+      <TimeControls
+        simulatedDays={simulation.simulatedDays()}
+        playing={simulation.playing()}
+        speed={simulation.speed()}
+        onPlay={simulation.play}
+        onPause={simulation.pause}
+        onSpeedChange={simulation.setSpeed}
+      />
       <footer class="page-footer">
         <span>A small invitation to look up.</span>
         <span>EXPLORE WITH CURIOSITY</span>

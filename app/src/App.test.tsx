@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'solid-js/web'
 import { createSignal, untrack } from 'solid-js'
 import App, { selectedPlanet } from './App'
@@ -9,8 +9,14 @@ import SolarSystem from './features/solar-system/SolarSystem'
 import { positionAtTime } from './features/solar-system/orbit'
 
 let dispose: (() => void) | undefined
+beforeEach(() => {
+  vi.stubGlobal('matchMedia', () => ({ matches: false }))
+  vi.stubGlobal('requestAnimationFrame', () => 1)
+  vi.stubGlobal('cancelAnimationFrame', () => {})
+})
 afterEach(() => {
   dispose?.()
+  vi.unstubAllGlobals()
   document.body.replaceChildren()
 })
 

@@ -50,6 +50,49 @@ a {
   font-size: 10px;
   letter-spacing: 0.15em;
 }
+.time-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border: 1px solid #2b3742;
+  border-radius: 7px;
+  background: #0d1620;
+}
+.time-controls button,
+.time-controls select {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid #bdd8c6;
+  border-radius: 5px;
+  color: #e4f2e9;
+  background: #1b2c2b;
+  font: inherit;
+}
+.time-controls button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.speed-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: #bac4ce;
+  font-size: 12px;
+}
+.simulation-time {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.time-limit {
+  width: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: #bac4ce;
+}
 .edition {
   color: #9aa6b1;
 }

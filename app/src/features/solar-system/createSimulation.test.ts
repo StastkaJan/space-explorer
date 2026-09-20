@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRoot } from 'solid-js'
-import { createSimulation, DEFAULT_SPEED } from './createSimulation'
+import {
+  createSimulation,
+  DEFAULT_SPEED,
+  MAX_SIMULATED_DAYS,
+} from './createSimulation'
 
 let dispose: () => void
 let nextId: number
@@ -48,6 +52,28 @@ function setHidden(value: boolean) {
 }
 
 describe('shared simulation clock', () => {
+  it('stops exactly at the illustration boundary and ignores Play at the end', () => {
+    const clock = start()
+    clock.setSpeed(1000)
+    tick(0)
+    tick(61_000)
+    expect(clock.simulatedDays()).toBe(MAX_SIMULATED_DAYS)
+    expect(clock.playing()).toBe(false)
+    expect(frames.size).toBe(0)
+    clock.play()
+    expect(clock.playing()).toBe(false)
+    expect(frames.size).toBe(0)
+  })
+
+  it('rejects invalid speeds without changing playback or time', () => {
+    const clock = start()
+    tick(0)
+    tick(1000)
+    for (const value of [NaN, Infinity, -1, 0]) clock.setSpeed(value)
+    expect(clock.speed()).toBe(DEFAULT_SPEED)
+    expect(clock.simulatedDays()).toBe(DEFAULT_SPEED)
+    expect(clock.playing()).toBe(true)
+  })
   it('uses one loop and advances days by elapsed seconds times the current speed', () => {
     const clock = start()
     clock.play()
